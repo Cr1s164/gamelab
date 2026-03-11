@@ -1,0 +1,62 @@
+{
+  "project": "gamelab",
+  "version": "1.0.0",
+  "description": "原创小游戏集合网站",
+  "deployment": {
+    "domestic": {
+      "platform": "gitee-pages",
+      "repository": "https://gitee.com/{username}/gamelab",
+      "url": "https://{username}.gitee.io/gamelab",
+      "enabled": true,
+      "branch": "main",
+      "buildCommand": "npm run build",
+      "outputDir": "dist"
+    },
+    "international": {
+      "platform": "vercel",
+      "url": "https://gamelab-site.vercel.app",
+      "enabled": true,
+      "projectName": "gamelab-site",
+      "framework": "vite"
+    }
+  },
+  "games": {
+    "planned": [
+      {
+        "name": "代码编辑器",
+        "id": "code-editor",
+        "status": "in-progress",
+        "description": "打字游戏学习编程语法"
+      },
+      {
+        "name": "开源匠人", 
+        "id": "open-source-craftsman",
+        "status": "planned",
+        "description": "开源协作模拟游戏"
+      },
+      {
+        "name": "像素艺术家",
+        "id": "pixel-artist", 
+        "status": "planned",
+        "description": "数字绘画和像素艺术创作"
+      },
+      {
+        "name": "二进制冒险",
+        "id": "binary-adventure",
+        "status": "prototype",
+        "description": "二进制学习平台跳跃游戏"
+      }
+    ],
+    "completed": []
+  },
+  "culture": {
+    "coreValues": ["开源", "隐私", "实用", "迭代"],
+    "brandColor": "#00d4ff",
+    "secondaryColor": "#00ff9d"
+  },
+  "technical": {
+    "gameEngine": "Phaser.js v3.90.0",
+    "buildTool": "Vite v7.3.1",
+    "deploymentTools": ["Vercel CLI", "Gitee Pages"]
+  }
+}
