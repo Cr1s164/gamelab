@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameLab - 原创小游戏集合</title>
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        header {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            color: #00d4ff;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #00d4ff, #00ff9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.6;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .game-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .game-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .game-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .game-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #00d4ff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+        }
+        
+        .game-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #00ff9d;
+        }
+        
+        .game-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+        
+        .game-description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .game-status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-planned {
+            background: rgba(255, 165, 0, 0.2);
+            color: #ffa500;
+        }
+        
+        .status-in-progress {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+        
+        .status-completed {
+            background: rgba(0, 255, 157, 0.2);
+            color: #00ff9d;
+        }
+        
+        #game-canvas-container {
+            width: 100%;
+            height: 500px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 3rem;
+        }
+        
+        .values {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .value-item {
+            background: rgba(0, 212, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+  <script type="module" crossorigin src="./assets/main-BLwTfaFM.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">🎮</div>
+        <h1>GameLab</h1>
+        <p class="tagline">原创小游戏集合 | 数字工匠文化</p>
+        <p class="subtitle">完全免费的游戏体验，融合技术学习和娱乐，所有游戏100%原创开发</p>
+    </header>
+    
+    <main>
+        <div class="game-container">
+            <!-- 代码编辑器游戏 -->
+            <div class="game-card" id="code-editor-game">
+                <div class="game-icon">💻</div>
+                <h3 class="game-title">代码编辑器</h3>
+                <p class="game-description">通过打字游戏学习编程语法，提高编码速度和准确性。</p>
+                <span class="game-status status-in-progress">开发中</span>
+            </div>
+            
+            <!-- 开源匠人游戏 -->
+            <div class="game-card" id="open-source-game">
+                <div class="game-icon">🔧</div>
+                <h3 class="game-title">开源匠人</h3>
+                <p class="game-description">模拟开源协作，管理项目进度，修复BUG，推动版本迭代。</p>
+                <span class="game-status status-planned">规划中</span>
+            </div>
+            
+            <!-- 像素艺术家游戏 -->
+            <div class="game-card" id="pixel-artist-game">
+                <div class="game-icon">🎨</div>
+                <h3 class="game-title">像素艺术家</h3>
+                <p class="game-description">数字绘画和像素艺术创作，培养创造力和美感。</p>
+                <span class="game-status status-planned">规划中</span>
+            </div>
+            
+            <!-- 二进制冒险游戏 -->
+            <div class="game-card" id="binary-adventure-game">
+                <div class="game-icon">🔢</div>
+                <h3 class="game-title">二进制冒险</h3>
+                <p class="game-description">在0和1的世界中进行平台跳跃，学习二进制基础知识。</p>
+                <span class="game-status status-planned">规划中</span>
+            </div>
+        </div>
+        
+        <div style="margin-top: 3rem;">
+            <h2 style="text-align: center; margin-bottom: 1.5rem; font-size: 2rem;">游戏演示</h2>
+            <div id="game-canvas-container">
+                <!-- Phaser游戏将在这里渲染 -->
+                <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">🎮</div>
+                        <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">正在加载游戏引擎...</p>
+                        <p style="opacity: 0.7;">GameLab 使用 Phaser.js 游戏框架</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 3rem; background: rgba(0, 212, 255, 0.05); padding: 2rem; border-radius: 15px;">
+            <h2 style="text-align: center; margin-bottom: 1.5rem;">数字工匠价值观</h2>
+            <div class="values">
+                <div class="value-item">开源协作</div>
+                <div class="value-item">隐私保护</div>
+                <div class="value-item">实用主义</div>
+                <div class="value-item">持续迭代</div>
+                <div class="value-item">原创精神</div>
+                <div class="value-item">技术共享</div>
+            </div>
+            <p style="text-align: center; margin-top: 1rem; opacity: 0.8;">
+                所有游戏遵循数字工匠文化，免费开源，保护隐私，提供实用价值，持续改进更新。
+            </p>
+        </div>
+    </main>
+    
+    <footer>
+        <p>© 2026 GameLab. 完全免费，无广告，无需注册。</p>
+        <p style="margin-top: 0.5rem;">Made with ❤️ by AI Assistant | 数字工匠文化践行者</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.6;">
+            本网站所有游戏均为100%原创开发，使用 Phaser.js 游戏引擎构建。
+        </p>
+    </footer>
+
+    <!-- Phaser.js 游戏脚本 -->
+</body>
+</html>
