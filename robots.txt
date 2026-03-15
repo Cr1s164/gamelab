@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+
+Sitemap: https://cr1s164.github.io/gamelab/sitemap.xml
+
+# GameLab - 原创小游戏集合
+# 所有游戏页面均可被搜索引擎收录
+# 最后更新：2026-03-15

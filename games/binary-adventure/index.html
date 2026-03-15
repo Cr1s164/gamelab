@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二进制冒险 - GameLab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        .game-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .binary-button {
+            transition: all 0.1s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .binary-button:active {
+            transform: scale(0.95);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .bit-0 {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: #e2e8f0;
+        }
+        
+        .bit-1 {
+            background: linear-gradient(135deg, #38b2ac 0%, #319795 100%);
+            color: white;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="text-white">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- 标题区域 -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                <i class="fas fa-code mr-3"></i>二进制冒险
+            </h1>
+            <p class="text-gray-300 text-lg mb-6">
+                最简单的二进制点击游戏 - 在0和1之间切换，挑战你的反应速度！
+            </p>
+            <a href="../index.html" class="inline-flex items-center text-blue-400 hover:text-blue-300">
+                <i class="fas fa-arrow-left mr-2"></i>返回GameLab首页
+            </a>
+        </header>
+
+        <!-- 游戏主区域 -->
+        <main class="game-container rounded-2xl p-6 md:p-8 mb-8">
+            <!-- 游戏统计 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="text-center p-6 bg-gray-800 rounded-xl">
+                    <div class="text-3xl font-bold text-green-400 mb-2" id="score">0</div>
+                    <div class="text-gray-400">当前分数</div>
+                </div>
+                <div class="text-center p-6 bg-gray-800 rounded-xl">
+                    <div class="text-3xl font-bold text-yellow-400 mb-2" id="cps">0.0</div>
+                    <div class="text-gray-400">点击/秒 (CPS)</div>
+                </div>
+                <div class="text-center p-6 bg-gray-800 rounded-xl">
+                    <div class="text-3xl font-bold text-blue-400 mb-2" id="time">60</div>
+                    <div class="text-gray-400">剩余时间(秒)</div>
+                </div>
+            </div>
+
+            <!-- 游戏按钮 -->
+            <div class="text-center mb-10">
+                <div class="mb-6">
+                    <div class="text-gray-400 mb-2">当前二进制位</div>
+                    <div class="text-6xl font-mono font-bold" id="current-bit">0</div>
+                </div>
+                
+                <button id="binary-button" class="binary-button bit-0 w-64 h-64 rounded-full text-8xl font-bold mx-auto flex items-center justify-center">
+                    0
+                </button>
+                
+                <div class="mt-6 text-gray-400">
+                    点击按钮在0和1之间切换，每次切换得1分！
+                </div>
+            </div>
+
+            <!-- 游戏控制 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <button id="start-btn" class="bg-green-600 hover:bg-green-700 text-white py-4 px-6 rounded-xl text-lg font-semibold transition">
+                    <i class="fas fa-play mr-2"></i>开始游戏
+                </button>
+                <button id="reset-btn" class="bg-red-600 hover:bg-red-700 text-white py-4 px-6 rounded-xl text-lg font-semibold transition">
+                    <i class="fas fa-redo mr-2"></i>重新开始
+                </button>
+            </div>
+        </main>
+
+        <!-- 游戏说明 -->
+        <section class="game-container rounded-2xl p-6 md:p-8">
+            <h2 class="text-2xl font-bold mb-4">
+                <i class="fas fa-info-circle mr-2"></i>游戏说明
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-green-400">游戏规则</h3>
+                    <ul class="list-disc pl-5 text-gray-300 space-y-2">
+                        <li>点击中央大按钮在0和1之间切换</li>
+                        <li>每次成功切换得1分</li>
+                        <li>游戏时间60秒，挑战你的最高分数</li>
+                        <li>尝试达到最高的点击速度(CPS)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-blue-400">技巧提示</h3>
+                    <ul class="list-disc pl-5 text-gray-300 space-y-2">
+                        <li>保持节奏，不要点击太快导致失误</li>
+                        <li>观察数字变化，确保每次点击都切换了数字</li>
+                        <li>尝试不同的点击模式找到最适合的速度</li>
+                        <li>挑战自我，不断提高CPS记录</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-6 border-t border-gray-700">
+                <h3 class="text-xl font-semibold mb-3 text-yellow-400">二进制知识</h3>
+                <p class="text-gray-300">
+                    二进制是计算机的基础语言，只使用0和1两个数字表示所有信息。
+                    这个游戏帮助你理解二进制的基本概念，同时锻炼反应能力。
+                </p>
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="mt-12 text-center text-gray-500 text-sm">
+            <p>GameLab - 原创小游戏集合 | 数字工匠文化 + 游戏化学习</p>
+            <p class="mt-2">© 2026 GameLab 项目 | 所有游戏100%原创开发</p>
+        </footer>
+    </div>
+
+    <!-- 游戏逻辑 -->
+    <script>
+        // 游戏状态
+        let score = 0;
+        let cps = 0;
+        let timeLeft = 60;
+        let isPlaying = false;
+        let gameInterval;
+        let cpsInterval;
+        let clickCount = 0;
+        let currentBit = 0;
+        let lastClickTime = Date.now();
+        
+        // 元素引用
+        const scoreElement = document.getElementById('score');
+        const cpsElement = document.getElementById('cps');
+        const timeElement = document.getElementById('time');
+        const currentBitElement = document.getElementById('current-bit');
+        const binaryButton = document.getElementById('binary-button');
+        const startBtn = document.getElementById('start-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        
+        // 初始化
+        function initGame() {
+            score = 0;
+            cps = 0;
+            timeLeft = 60;
+            isPlaying = false;
+            clickCount = 0;
+            currentBit = 0;
+            
+            updateUI();
+            binaryButton.textContent = '0';
+            binaryButton.className = 'binary-button bit-0 w-64 h-64 rounded-full text-8xl font-bold mx-auto flex items-center justify-center';
+            currentBitElement.textContent = '0';
+            
+            startBtn.disabled = false;
+            startBtn.innerHTML = '<i class="fas fa-play mr-2"></i>开始游戏';
+            startBtn.className = 'bg-green-600 hover:bg-green-700 text-white py-4 px-6 rounded-xl text-lg font-semibold transition';
+        }
+        
+        // 更新UI
+        function updateUI() {
+            scoreElement.textContent = score;
+            cpsElement.textContent = cps.toFixed(1);
+            timeElement.textContent = timeLeft;
+            currentBitElement.textContent = currentBit;
+        }
+        
+        // 切换二进制位
+        function toggleBit() {
+            if (!isPlaying) return;
+            
+            // 切换0/1
+            currentBit = currentBit === 0 ? 1 : 0;
+            
+            // 更新按钮显示
+            binaryButton.textContent = currentBit;
+            binaryButton.className = `binary-button ${currentBit === 0 ? 'bit-0' : 'bit-1'} w-64 h-64 rounded-full text-8xl font-bold mx-auto flex items-center justify-center`;
+            
+            // 增加分数
+            score++;
+            clickCount++;
+            
+            // 更新UI
+            updateUI();
+            
+            // 添加点击效果
+            binaryButton.classList.add('pulse');
+            setTimeout(() => {
+                binaryButton.classList.remove('pulse');
+            }, 200);
+        }
+        
+        // 计算CPS（每秒点击次数）
+        function calculateCPS() {
+            const now = Date.now();
+            const timeDiff = (now - lastClickTime) / 1000; // 秒
+            if (timeDiff > 0) {
+                cps = clickCount / timeDiff;
+                updateUI();
+            }
+        }
+        
+        // 开始游戏
+        function startGame() {
+            if (isPlaying) return;
+            
+            isPlaying = true;
+            startBtn.disabled = true;
+            startBtn.innerHTML = '<i class="fas fa-pause mr-2"></i>游戏中...';
+            startBtn.className = 'bg-yellow-600 hover:bg-yellow-700 text-white py-4 px-6 rounded-xl text-lg font-semibold transition';
+            
+            // 重置点击计数和时间
+            clickCount = 0;
+            lastClickTime = Date.now();
+            
+            // 开始游戏计时器
+            gameInterval = setInterval(() => {
+                timeLeft--;
+                updateUI();
+                
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+            
+            // 开始CPS计算
+            cpsInterval = setInterval(calculateCPS, 500);
+        }
+        
+        // 结束游戏
+        function endGame() {
+            isPlaying = false;
+            clearInterval(gameInterval);
+            clearInterval(cpsInterval);
+            
+            startBtn.disabled = false;
+            startBtn.innerHTML = '<i class="fas fa-play mr-2"></i>重新开始';
+            startBtn.className = 'bg-green-600 hover:bg-green-700 text-white py-4 px-6 rounded-xl text-lg font-semibold transition';
+            
+            // 显示最终结果
+            alert(`游戏结束！\n最终分数: ${score}\n最高CPS: ${cps.toFixed(1)}`);
+        }
+        
+        // 事件监听
+        binaryButton.addEventListener('click', toggleBit);
+        
+        startBtn.addEventListener('click', () => {
+            if (!isPlaying) {
+                if (timeLeft <= 0) {
+                    initGame();
+                }
+                startGame();
+            }
+        });
+        
+        resetBtn.addEventListener('click', () => {
+            clearInterval(gameInterval);
+            clearInterval(cpsInterval);
+            initGame();
+        });
+        
+        // 初始化游戏
+        initGame();
+        
+        // 添加键盘支持
+        document.addEventListener('keydown', (event) => {
+            if (event.code === 'Space' && isPlaying) {
+                event.preventDefault();
+                toggleBit();
+            }
+        });
+    </script>
+</body>
+</html>
