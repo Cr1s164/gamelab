@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>代码编辑器 - GameLab</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #f0f0f0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #00ff9d;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00d4ff, #00ff9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            color: #aaa;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+        
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        @media (min-width: 992px) {
+            .game-area {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .code-section, .typing-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #00d4ff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title::before {
+            content: "💻";
+            font-size: 1.8rem;
+        }
+        
+        #code-display {
+            background: #0a0a1a;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Consolas', monospace;
+            font-size: 18px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+            min-height: 300px;
+        }
+        
+        .code-line {
+            margin-bottom: 8px;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .code-line.correct {
+            background: rgba(0, 255, 157, 0.1);
+            border-left: 3px solid #00ff9d;
+        }
+        
+        .code-line.incorrect {
+            background: rgba(255, 107, 107, 0.1);
+            border-left: 3px solid #ff6b6b;
+        }
+        
+        .code-line.current {
+            background: rgba(0, 212, 255, 0.15);
+            border-left: 3px solid #00d4ff;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { background-color: rgba(0, 212, 255, 0.15); }
+            50% { background-color: rgba(0, 212, 255, 0.25); }
+            100% { background-color: rgba(0, 212, 255, 0.15); }
+        }
+        
+        #typing-input {
+            width: 100%;
+            height: 150px;
+            background: #0a0a1a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Consolas', monospace;
+            font-size: 18px;
+            color: #f0f0f0;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+        
+        #typing-input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+        }
+        
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00ff9d;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        #start-button {
+            background: #00d4ff;
+            color: white;
+        }
+        
+        #start-button:hover {
+            background: #00b8e0;
+            transform: translateY(-2px);
+        }
+        
+        #reset-button {
+            background: #444;
+            color: white;
+            border: 1px solid #666;
+        }
+        
+        #reset-button:hover {
+            background: #555;
+        }
+        
+        #next-button {
+            background: #222;
+            color: #00ff9d;
+            border: 1px solid #00ff9d;
+        }
+        
+        #next-button:hover {
+            background: rgba(0, 255, 157, 0.1);
+        }
+        
+        .hint {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: #aaa;
+            border-left: 4px solid #00d4ff;
+        }
+        
+        .hint-title {
+            color: #00d4ff;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .difficulty-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .difficulty-btn {
+            padding: 8px 16px;
+            background: #222;
+            color: #aaa;
+            border: 1px solid #444;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .difficulty-btn.active {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+            border-color: #00d4ff;
+        }
+        
+        .syntax-keyword { color: #ff6b6b; }
+        .syntax-function { color: #00d4ff; }
+        .syntax-string { color: #00ff9d; }
+        .syntax-number { color: #ffaa00; }
+        .syntax-comment { color: #888; }
+        .syntax-operator { color: #ff6b6b; }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <div class="logo">💻</div>
+            <h1>代码编辑器挑战</h1>
+            <p class="subtitle">通过打字游戏学习JavaScript语法，提高编码速度和准确性</p>
+        </div>
+        
+        <div class="difficulty-selector">
+            <div class="difficulty-btn active" data-level="beginner">入门级</div>
+            <div class="difficulty-btn" data-level="intermediate">进阶级</div>
+            <div class="difficulty-btn" data-level="advanced">专家级</div>
+        </div>
+        
+        <div class="game-area">
+            <div class="code-section">
+                <div class="section-title">代码示例</div>
+                <div id="code-display">
+                    // 代码将在这里显示
+                    // 请正确输入下面的代码
+                </div>
+                
+                <div class="hint">
+                    <div class="hint-title">💡 游戏提示</div>
+                    <p>1. 准确输入显示的所有代码，包括空格和标点符号</p>
+                    <p>2. 绿色高亮表示正确，红色高亮表示错误</p>
+                    <p>3. 当前行会有蓝色闪烁提示</p>
+                    <p>4. 尽量提高打字速度和准确性</p>
+                </div>
+            </div>
+            
+            <div class="typing-section">
+                <div class="section-title">输入区域</div>
+                <textarea id="typing-input" placeholder="在这里输入代码..."></textarea>
+                
+                <div class="stats-panel">
+                    <div class="stat-item">
+                        <div class="stat-value" id="wpm">0</div>
+                        <div class="stat-label">字/分钟</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="accuracy">100%</div>
+                        <div class="stat-label">准确率</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="progress">0%</div>
+                        <div class="stat-label">进度</div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button id="start-button">开始游戏</button>
+                    <button id="reset-button">重新开始</button>
+                    <button id="next-button">下一个挑战</button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2026 GameLab | 数字工匠文化 | 完全免费，无广告，无需注册</p>
+            <p style="margin-top: 5px;">本游戏旨在帮助开发者提升编程打字技能，所有代码示例均为原创</p>
+        </footer>
+    </div>
+
+    <script>
+        // 游戏核心变量
+        let gameActive = false;
+        let startTime = null;
+        let currentCode = '';
+        let currentLines = [];
+        let currentLineIndex = 0;
+        let correctChars = 0;
+        let totalChars = 0;
+        let timerInterval = null;
+        
+        // 代码库 - 按难度分级
+        const codeLibrary = {
+            beginner: [
+                {
+                    title: "变量声明",
+                    code: `let name = "小明";
+const age = 25;
+var score = 100;`
+                },
+                {
+                    title: "条件语句",
+                    code: `if (age >= 18) {
+    console.log("成年人");
+} else {
+    console.log("未成年人");
+}`
+                },
+                {
+                    title: "循环语句",
+                    code: `for (let i = 0; i < 10; i++) {
+    console.log("当前数字: " + i);
+}`
+                }
+            ],
+            intermediate: [
+                {
+                    title: "函数定义",
+                    code: `function calculateSum(a, b) {
+    return a + b;
+}
+
+const result = calculateSum(5, 10);
+console.log("计算结果: " + result);`
+                },
+                {
+                    title: "数组操作",
+                    code: `const numbers = [1, 2, 3, 4, 5];
+const doubled = numbers.map(n => n * 2);
+const sum = numbers.reduce((total, n) => total + n, 0);`
+                },
+                {
+                    title: "对象操作",
+                    code: `const user = {
+    name: "张三",
+    age: 30,
+    email: "zhangsan@example.com"
+};
+
+console.log(user.name);
+user.age = 31;`
+                }
+            ],
+            advanced: [
+                {
+                    title: "异步编程",
+                    code: `async function fetchData() {
+    try {
+        const response = await fetch('/api/data');
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('获取数据失败:', error);
+    }
+}`
+                },
+                {
+                    title: "类定义",
+                    code: `class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    speak() {
+        console.log(this.name + " makes a sound.");
+    }
+}
+
+const dog = new Animal("Dog");
+dog.speak();`
+                },
+                {
+                    title: "模块导入",
+                    code: `import { useState, useEffect } from 'react';
+
+function Counter() {
+    const [count, setCount] = useState(0);
+    
+    useEffect(() => {
+        document.title = '计数: ' + count;
+    }, [count]);
+    
+    return count;
+}`
+                }
+            ]
+        };
+        
+        // 当前难度
+        let currentDifficulty = 'beginner';
+        let currentChallengeIndex = 0;
+        
+        // DOM元素
+        const codeDisplay = document.getElementById('code-display');
+        const typingInput = document.getElementById('typing-input');
+        const startButton = document.getElementById('start-button');
+        const resetButton = document.getElementById('reset-button');
+        const nextButton = document.getElementById('next-button');
+        const wpmDisplay = document.getElementById('wpm');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const progressDisplay = document.getElementById('progress');
+        const difficultyButtons = document.querySelectorAll('.difficulty-btn');
+        
+        // 初始化
+        function initGame() {
+            // 设置难度按钮事件
+            difficultyButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    difficultyButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentDifficulty = btn.dataset.level;
+                    loadRandomChallenge();
+                });
+            });
+            
+            // 按钮事件
+            startButton.addEventListener('click', startGame);
+            resetButton.addEventListener('click', resetGame);
+            nextButton.addEventListener('click', loadRandomChallenge);
+            
+            // 输入事件
+            typingInput.addEventListener('input', handleTyping);
+            typingInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !gameActive) {
+                    startGame();
+                }
+            });
+            
+            // 加载第一个挑战
+            loadRandomChallenge();
+        }
+        
+        // 加载随机挑战
+        function loadRandomChallenge() {
+            const challenges = codeLibrary[currentDifficulty];
+            currentChallengeIndex = Math.floor(Math.random() * challenges.length);
+            const challenge = challenges[currentChallengeIndex];
+            
+            currentCode = challenge.code;
+            currentLines = currentCode.split('\n');
+            currentLineIndex = 0;
+            
+            // 显示代码
+            displayCode();
+            
+            // 重置游戏状态
+            resetGame();
+        }
+        
+        // 显示代码（带语法高亮）
+        function displayCode() {
+            let html = '';
+            
+            currentLines.forEach((line, index) => {
+                let lineHtml = line;
+                
+                // 简单的语法高亮（实际项目可以使用Prism.js等库）
+                lineHtml = lineHtml
+                    .replace(/\b(let|const|var|if|else|for|while|function|return|class|import|from|export|default|async|await|try|catch)\b/g, '<span class="syntax-keyword">$1</span>')
+                    .replace(/\b(console|log|fetch|map|reduce|useState|useEffect)\b/g, '<span class="syntax-function">$1</span>')
+                    .replace(/(".*?"|'.*?')/g, '<span class="syntax-string">$1</span>')
+                    .replace(/\b(\d+)\b/g, '<span class="syntax-number">$1</span>')
+                    .replace(/\/\/.*$/g, '<span class="syntax-comment">$&</span>')
+                    .replace(/[=<>!&|+\-*/%]+/g, '<span class="syntax-operator">$&</span>');
+                
+                const lineClass = index === currentLineIndex ? 'code-line current' : 'code-line';
+                html += `<div class="${lineClass}" data-line="${index}">${lineHtml}</div>`;
+            });
+            
+            codeDisplay.innerHTML = html;
+        }
+        
+        // 开始游戏
+        function startGame() {
+            if (gameActive) return;
+            
+            gameActive = true;
+            startTime = Date.now();
+            correctChars = 0;
+            totalChars = 0;
+            currentLineIndex = 0;
+            
+            typingInput.value = '';
+            typingInput.disabled = false;
+            typingInput.focus();
+            
+            startButton.textContent = '游戏中...';
+            startButton.disabled = true;
+            
+            // 开始计时器
+            timerInterval = setInterval(updateStats, 1000);
+            
+            // 更新显示
+            displayCode();
+            updateStats();
+        }
+        
+        // 重置游戏
+        function resetGame() {
+            gameActive = false;
+            startTime = null;
+            correctChars = 0;
+            totalChars = 0;
+            currentLineIndex = 0;
+            
+            typingInput.value = '';
+            typingInput.disabled = false;
+            
+            startButton.textContent = '开始游戏';
+            startButton.disabled = false;
+            
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            
+            // 更新显示
+            displayCode();
+            updateStats();
+        }
+        
+        // 处理输入
+        function handleTyping(e) {
+            if (!gameActive) return;
+            
+            const input = typingInput.value;
+            const targetLine = currentLines[currentLineIndex] || '';
+            
+            // 计算正确字符数
+            let correct = 0;
+            for (let i = 0; i < input.length; i++) {
+                if (i < targetLine.length && input[i] === targetLine[i]) {
+                    correct++;
+                }
+            }
+            
+            correctChars = correct;
+            totalChars = input.length;
+            
+            // 检查是否完成当前行
+            if (input === targetLine) {
+                // 标记当前行为正确
+                const lineElements = document.querySelectorAll('.code-line');
+                if (lineElements[currentLineIndex]) {
+                    lineElements[currentLineIndex].className = 'code-line correct';
+                }
+                
+                // 移动到下一行
+                currentLineIndex++;
+                
+                // 如果所有行都完成
+                if (currentLineIndex >= currentLines.length) {
+                    endGame(true);
+                    return;
+                }
+                
+                // 清空输入框，准备下一行
+                setTimeout(() => {
+                    typingInput.value = '';
+                    displayCode();
+                }, 100);
+            } else {
+                // 更新当前行状态
+                const lineElements = document.querySelectorAll('.code-line');
+                if (lineElements[currentLineIndex]) {
+                    if (input === targetLine.substring(0, input.length)) {
+                        // 部分正确
+                        lineElements[currentLineIndex].className = 'code-line current';
+                    } else {
+                        // 有错误
+                        lineElements[currentLineIndex].className = 'code-line incorrect';
+                    }
+                }
+            }
+            
+            updateStats();
+        }
+        
+        // 更新统计
+        function updateStats() {
+            if (!gameActive) {
+                wpmDisplay.textContent = '0';
+                accuracyDisplay.textContent = '100%';
+                progressDisplay.textContent = '0%';
+                return;
+            }
+            
+            // 计算WPM（每分钟字数）
+            const timeElapsed = (Date.now() - startTime) / 60000; // 分钟
+            const words = correctChars / 5; // 假设5个字符一个单词
+            const wpm = Math.round(words / timeElapsed) || 0;
+            wpmDisplay.textContent = wpm;
+            
+            // 计算准确率
+            const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 100;
+            accuracyDisplay.textContent = accuracy + '%';
+            
+            // 计算进度
+            const progress = Math.round((currentLineIndex / currentLines.length) * 100);
+            progressDisplay.textContent = progress + '%';
+        }
+        
+        // 结束游戏
+        function endGame(success) {
+            gameActive = false;
+            
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            
+            startButton.textContent = '开始游戏';
+            startButton.disabled = false;
+            typingInput.disabled = true;
+            
+            // 显示结果
+            const timeElapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+            const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 100;
+            
+            if (success) {
+                alert(`🎉 挑战完成！\n时间: ${timeElapsed}秒\n准确率: ${accuracy}%\nWPM: ${wpmDisplay.textContent}`);
+            }
+        }
+        
+        // 初始化游戏
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>

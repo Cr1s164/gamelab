@@ -165,7 +165,7 @@
             font-size: 0.9rem;
         }
     </style>
-  <script type="module" crossorigin src="./assets/main-BLwTfaFM.js"></script>
+
 </head>
 <body>
     <header>
@@ -178,12 +178,15 @@
     <main>
         <div class="game-container">
             <!-- 代码编辑器游戏 -->
-            <div class="game-card" id="code-editor-game">
+            <a href="games/code-editor/index.html" class="game-card" id="code-editor-game" style="text-decoration: none; color: inherit; display: block;">
                 <div class="game-icon">💻</div>
                 <h3 class="game-title">代码编辑器</h3>
                 <p class="game-description">通过打字游戏学习编程语法，提高编码速度和准确性。</p>
-                <span class="game-status status-in-progress">开发中</span>
-            </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
+                    <span class="game-status status-completed">可立即试玩</span>
+                    <span style="font-size: 0.9rem; color: #00ff9d;">点击进入 →</span>
+                </div>
+            </a>
             
             <!-- 开源匠人游戏 -->
             <div class="game-card" id="open-source-game">
@@ -214,16 +217,67 @@
         </div>
         
         <div style="margin-top: 3rem;">
-            <h2 style="text-align: center; margin-bottom: 1.5rem; font-size: 2rem;">游戏演示</h2>
+            <h2 style="text-align: center; margin-bottom: 1.5rem; font-size: 2rem;">二进制转换挑战 - 现场演示</h2>
             <div id="game-canvas-container">
-                <!-- Phaser游戏将在这里渲染 -->
-                <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 4rem; margin-bottom: 1rem;">🎮</div>
-                        <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">正在加载游戏引擎...</p>
-                        <p style="opacity: 0.7;">GameLab 使用 Phaser.js 游戏框架</p>
+                <!-- 真正的游戏将在这里渲染 -->
+                <div id="binary-game" style="width: 100%; height: 100%; padding: 20px; overflow: hidden;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h3 style="color: #00ff9d; margin-bottom: 5px;">🧮 二进制转换挑战</h3>
+                        <p style="color: #aaa; font-size: 14px;">点击位切换 0/1 • 输入十进制数字 • 实时转换</p>
+                    </div>
+                    
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div id="target-display" style="font-size: 20px; color: #00d4ff; font-weight: bold; margin-bottom: 10px;">
+                            目标: 将十进制 <span id="target-number">42</span> 转换为二进制
+                        </div>
+                        <div id="result-display" style="font-size: 16px; color: #aaa;">
+                            点击"开始游戏"按钮开始挑战
+                        </div>
+                    </div>
+                    
+                    <!-- 二进制位显示 -->
+                    <div id="bits-container" style="display: flex; justify-content: center; align-items: center; margin: 30px 0; flex-wrap: wrap; gap: 10px;">
+                        <!-- 位将通过JavaScript动态生成 -->
+                    </div>
+                    
+                    <!-- 数值显示 -->
+                    <div style="text-align: center; margin: 25px 0;">
+                        <div id="decimal-display" style="font-size: 22px; color: #fff; margin-bottom: 10px; font-weight: bold;">
+                            十进制: <span id="decimal-value">0</span>
+                        </div>
+                        <div id="binary-display" style="font-size: 22px; color: #00ff9d;">
+                            二进制: <span id="binary-value">00000000</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 游戏控制 -->
+                    <div style="display: flex; justify-content: center; gap: 20px; margin-top: 30px;">
+                        <button id="start-button" style="background: #00d4ff; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s;">
+                            开始游戏
+                        </button>
+                        <button id="reset-button" style="background: #444; color: white; border: 1px solid #666; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                            重置
+                        </button>
+                        <button id="input-button" style="background: #222; color: #aaa; border: 1px solid #444; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                            输入十进制
+                        </button>
+                    </div>
+                    
+                    <!-- 游戏状态 -->
+                    <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                        <div id="timer-display" style="font-size: 20px; color: #ffaa00; font-weight: bold;">
+                            时间: <span id="time-left">10</span>s
+                        </div>
+                        <div id="score-display" style="font-size: 20px; color: #00ff9d; font-weight: bold;">
+                            分数: <span id="score-value">0</span>
+                        </div>
                     </div>
                 </div>
+            </div>
+            <div style="margin-top: 1rem; text-align: center; color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">
+                <p>🧠 学习二进制转换：点击位切换0/1，输入十进制数字，实时查看转换结果</p>
+                <p>🎯 游戏目标：在10秒内将随机十进制数字转换为正确的二进制表示</p>
+                <p>💡 提示：每个位代表2的幂次方（如2^7=128, 2^6=64, ...）</p>
             </div>
         </div>
         
@@ -247,10 +301,302 @@
         <p>© 2026 GameLab. 完全免费，无广告，无需注册。</p>
         <p style="margin-top: 0.5rem;">Made with ❤️ by AI Assistant | 数字工匠文化践行者</p>
         <p style="margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.6;">
-            本网站所有游戏均为100%原创开发，使用 Phaser.js 游戏引擎构建。
+            本网站所有游戏均为100%原创开发，使用纯 HTML/CSS/JavaScript 构建。
         </p>
     </footer>
 
-    <!-- Phaser.js 游戏脚本 -->
+    <!-- 二进制转换挑战游戏脚本 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 游戏变量
+            let gameActive = false;
+            let timeLeft = 10;
+            let score = 0;
+            let targetDecimal = 42;
+            let decimalValue = 0;
+            let binaryBits = [0, 0, 0, 0, 0, 0, 0, 0]; // 8位二进制，从高位到低位（索引0是最高位2^7）
+            let timerInterval = null;
+            
+            // DOM元素
+            const targetNumberEl = document.getElementById('target-number');
+            const resultDisplayEl = document.getElementById('result-display');
+            const bitsContainerEl = document.getElementById('bits-container');
+            const decimalValueEl = document.getElementById('decimal-value');
+            const binaryValueEl = document.getElementById('binary-value');
+            const startButtonEl = document.getElementById('start-button');
+            const resetButtonEl = document.getElementById('reset-button');
+            const inputButtonEl = document.getElementById('input-button');
+            const timeLeftEl = document.getElementById('time-left');
+            const scoreValueEl = document.getElementById('score-value');
+            
+            // 初始化二进制位显示
+            function initBits() {
+                bitsContainerEl.innerHTML = '';
+                const bitWeights = [128, 64, 32, 16, 8, 4, 2, 1];
+                
+                for (let i = 0; i < 8; i++) {
+                    const bitDiv = document.createElement('div');
+                    bitDiv.className = 'bit-item';
+                    bitDiv.style.cssText = `
+                        width: 60px;
+                        height: 60px;
+                        border-radius: 50%;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                        background: #222;
+                        color: #888;
+                        border: 2px solid #444;
+                        margin: 0 5px;
+                    `;
+                    bitDiv.dataset.index = i;
+                    bitDiv.dataset.value = '0';
+                    
+                    // 位值显示
+                    const bitValue = document.createElement('div');
+                    bitValue.style.fontSize = '24px';
+                    bitValue.style.fontWeight = 'bold';
+                    bitValue.textContent = '0';
+                    bitValue.id = `bit-value-${i}`;
+                    
+                    // 位权重显示
+                    const bitWeight = document.createElement('div');
+                    bitWeight.style.fontSize = '12px';
+                    bitWeight.style.color = '#ffaa00';
+                    bitWeight.textContent = `2^${7-i}`;
+                    
+                    // 十进制权重
+                    const decimalWeight = document.createElement('div');
+                    decimalWeight.style.fontSize = '10px';
+                    decimalWeight.style.color = '#888';
+                    decimalWeight.textContent = bitWeights[i];
+                    
+                    bitDiv.appendChild(bitValue);
+                    bitDiv.appendChild(bitWeight);
+                    bitDiv.appendChild(decimalWeight);
+                    
+                    // 点击事件
+                    bitDiv.addEventListener('click', function() {
+                        if (!gameActive) return;
+                        
+                        const index = parseInt(this.dataset.index);
+                        const currentVal = parseInt(this.dataset.value);
+                        const newVal = currentVal === 0 ? 1 : 0;
+                        
+                        this.dataset.value = newVal;
+                        binaryBits[index] = newVal;
+                        
+                        if (newVal === 1) {
+                            this.style.background = '#00d4ff';
+                            this.style.color = 'white';
+                            this.style.borderColor = '#00ff9d';
+                        } else {
+                            this.style.background = '#222';
+                            this.style.color = '#888';
+                            this.style.borderColor = '#444';
+                        }
+                        
+                        bitValue.textContent = newVal;
+                        updateDecimalAndBinary();
+                        checkTarget();
+                    });
+                    
+                    bitsContainerEl.appendChild(bitDiv);
+                }
+            }
+            
+            // 更新十进制和二进制显示
+            function updateDecimalAndBinary() {
+                decimalValue = 0;
+                let binaryStr = '';
+                const bitWeights = [128, 64, 32, 16, 8, 4, 2, 1];
+                
+                for (let i = 0; i < 8; i++) {
+                    if (binaryBits[i] === 1) {
+                        decimalValue += bitWeights[i];
+                    }
+                    binaryStr = binaryBits[i] + binaryStr;
+                }
+                
+                decimalValueEl.textContent = decimalValue;
+                binaryValueEl.textContent = binaryStr;
+            }
+            
+            // 检查是否达到目标
+            function checkTarget() {
+                if (!gameActive) return;
+                
+                if (decimalValue === targetDecimal) {
+                    score += 10;
+                    scoreValueEl.textContent = score;
+                    resultDisplayEl.textContent = '✓ 正确！ +10分';
+                    resultDisplayEl.style.color = '#00ff9d';
+                    
+                    // 延迟后生成新目标
+                    setTimeout(() => {
+                        if (gameActive) {
+                            targetDecimal = Math.floor(Math.random() * 256);
+                            targetNumberEl.textContent = targetDecimal;
+                            resultDisplayEl.textContent = '继续！转换下一个数字';
+                            resultDisplayEl.style.color = '#00ff9d';
+                        }
+                    }, 1000);
+                }
+            }
+            
+            // 开始游戏
+            function startGame() {
+                if (gameActive) return;
+                
+                gameActive = true;
+                score = 0;
+                timeLeft = 10;
+                targetDecimal = Math.floor(Math.random() * 256);
+                
+                // 更新显示
+                targetNumberEl.textContent = targetDecimal;
+                scoreValueEl.textContent = score;
+                timeLeftEl.textContent = timeLeft;
+                resultDisplayEl.textContent = '游戏进行中... 快速转换目标数字！';
+                resultDisplayEl.style.color = '#00ff9d';
+                
+                // 重置所有位为0
+                binaryBits = [0, 0, 0, 0, 0, 0, 0, 0];
+                const bitElements = bitsContainerEl.querySelectorAll('.bit-item');
+                bitElements.forEach(bit => {
+                    bit.dataset.value = '0';
+                    bit.style.background = '#222';
+                    bit.style.color = '#888';
+                    bit.style.borderColor = '#444';
+                    bit.querySelector('div').textContent = '0';
+                });
+                
+                updateDecimalAndBinary();
+                
+                // 启动计时器
+                if (timerInterval) clearInterval(timerInterval);
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    timeLeftEl.textContent = timeLeft;
+                    
+                    if (timeLeft <= 5) {
+                        timeLeftEl.style.color = '#ff6b6b';
+                    }
+                    
+                    if (timeLeft <= 0) {
+                        endGame(false);
+                    }
+                }, 1000);
+            }
+            
+            // 重置游戏
+            function resetGame() {
+                gameActive = false;
+                timeLeft = 10;
+                score = 0;
+                
+                targetNumberEl.textContent = '42';
+                scoreValueEl.textContent = '0';
+                timeLeftEl.textContent = '10';
+                timeLeftEl.style.color = '#ffaa00';
+                resultDisplayEl.textContent = '点击"开始游戏"按钮开始挑战';
+                resultDisplayEl.style.color = '#aaa';
+                
+                // 重置所有位为0
+                binaryBits = [0, 0, 0, 0, 0, 0, 0, 0];
+                const bitElements = bitsContainerEl.querySelectorAll('.bit-item');
+                bitElements.forEach(bit => {
+                    bit.dataset.value = '0';
+                    bit.style.background = '#222';
+                    bit.style.color = '#888';
+                    bit.style.borderColor = '#444';
+                    bit.querySelector('div').textContent = '0';
+                });
+                
+                updateDecimalAndBinary();
+                
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+            }
+            
+            // 结束游戏
+            function endGame(success) {
+                gameActive = false;
+                
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+                
+                if (success) {
+                    resultDisplayEl.textContent = `🎉 挑战完成！分数: ${score}`;
+                    resultDisplayEl.style.color = '#00ff9d';
+                } else {
+                    resultDisplayEl.textContent = '时间到！点击"开始游戏"重新开始';
+                    resultDisplayEl.style.color = '#ff6b6b';
+                }
+            }
+            
+            // 设置十进制值
+            function setDecimalValue() {
+                if (gameActive) {
+                    alert('游戏进行中，无法手动设置');
+                    return;
+                }
+                
+                const input = prompt('输入十进制数字 (0-255):', decimalValue);
+                if (input === null) return;
+                
+                const value = parseInt(input);
+                if (isNaN(value) || value < 0 || value > 255) {
+                    alert('请输入0-255之间的有效数字');
+                    return;
+                }
+                
+                decimalValue = value;
+                decimalValueEl.textContent = value;
+                
+                // 转换为二进制并更新位
+                const binaryStr = value.toString(2).padStart(8, '0');
+                const bitElements = bitsContainerEl.querySelectorAll('.bit-item');
+                
+                for (let i = 0; i < 8; i++) {
+                    const bitVal = parseInt(binaryStr[7 - i]);
+                    binaryBits[i] = bitVal;
+                    
+                    const bitEl = bitElements[i];
+                    bitEl.dataset.value = bitVal;
+                    bitEl.querySelector('div').textContent = bitVal;
+                    
+                    if (bitVal === 1) {
+                        bitEl.style.background = '#00d4ff';
+                        bitEl.style.color = 'white';
+                        bitEl.style.borderColor = '#00ff9d';
+                    } else {
+                        bitEl.style.background = '#222';
+                        bitEl.style.color = '#888';
+                        bitEl.style.borderColor = '#444';
+                    }
+                }
+                
+                binaryValueEl.textContent = binaryStr;
+            }
+            
+            // 按钮事件监听
+            startButtonEl.addEventListener('click', startGame);
+            resetButtonEl.addEventListener('click', resetGame);
+            inputButtonEl.addEventListener('click', setDecimalValue);
+            
+            // 初始化
+            initBits();
+            updateDecimalAndBinary();
+        });
+    </script>
+
 </body>
 </html>
