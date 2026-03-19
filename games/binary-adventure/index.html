@@ -163,6 +163,7 @@
         let cpsInterval;
         let clickCount = 0;
         let currentBit = 0;
+        let highScore = 0;
         let lastClickTime = Date.now();
         
         // 元素引用
@@ -176,6 +177,10 @@
         
         // 初始化
         function initGame() {
+            // 从localStorage加载最高分
+            const savedHighScore = localStorage.getItem('binaryAdventureHighScore');
+            highScore = savedHighScore ? parseInt(savedHighScore) : 0;
+            
             score = 0;
             cps = 0;
             timeLeft = 60;
@@ -269,12 +274,18 @@
             clearInterval(gameInterval);
             clearInterval(cpsInterval);
             
+            // 保存最高分
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('binaryAdventureHighScore', highScore.toString());
+            }
+            
             startBtn.disabled = false;
             startBtn.innerHTML = '<i class="fas fa-play mr-2"></i>重新开始';
             startBtn.className = 'bg-green-600 hover:bg-green-700 text-white py-4 px-6 rounded-xl text-lg font-semibold transition';
             
             // 显示最终结果
-            alert(`游戏结束！\n最终分数: ${score}\n最高CPS: ${cps.toFixed(1)}`);
+            alert(`游戏结束！\n最终分数: ${score}\n最高CPS: ${cps.toFixed(1)}\n历史最高分: ${highScore}`);
         }
         
         // 事件监听
